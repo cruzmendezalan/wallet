@@ -1,5 +1,6 @@
 import requests
 import json
+import urllib
 
 class pJson(object):
 	"""Clase para manipular strings json con el fin de formatearlos o volverlos objetos """
@@ -12,20 +13,36 @@ class pJson(object):
 
 
 class Bitso(object):
-	""" Esta clase consume de la api publica de bitso """
-	def __init__(self):
+	""" Esta clase consume de la api publica de bitso
+		El constructor recibe una varibale boleana, la cual hace un switch
+		para cambiar entre modo desarrollo y modo developer
+	"""
+	def __init__(self, production = False):
 		super(Bitso, self).__init__()
-		self.pJson = pJson()
+		self.pJson 		= pJson()
+		self.production = production
 
 	def availableBooks(self):
-		r = requests.get("https://api.bitso.com/v3/available_books/")
+		r = requests.get(self.getBaseUrl()+"available_books/")
 		r.json()
 		self.pJson.prettyPrint(r.content)
+
+	def ticker(self, book):
+		data 	= {'book' : book}
+		r 		= requests.get(self.getBaseUrl()+"ticker/", params = data)
+		r.json()
+		self.pJson.prettyPrint(r.content)
+
+	def getBaseUrl(self):
+		if self.production == True:
+			return "https://api.bitso.com/v3/"
+		return "https://api-dev.bitso.com/v3/"
 		
 
 def main():
 	b = Bitso()
 	b.availableBooks()
+	b.ticker("xrp_mxn")
 
 if __name__ == "__main__":
     # execute only if run as a script
