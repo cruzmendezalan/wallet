@@ -33,6 +33,18 @@ class Bitso(object):
 		r.json()
 		self.pJson.prettyPrint(r.content)
 
+	def orderBook(self, book):
+		data = {'book':book}
+		r = requests.get(self.getBaseUrl()+"order_book/", params = data)
+		r.json()
+		self.pJson.prettyPrint(r.content)
+
+	def trades(self, book):
+		data = {'book':book}
+		r = requests.get(self.getBaseUrl()+"trades/",params = data)
+		r.json()
+		self.pJson.prettyPrint(r.content)
+
 	def getBaseUrl(self):
 		if self.production == True:
 			return "https://api.bitso.com/v3/"
@@ -41,8 +53,10 @@ class Bitso(object):
 
 def main():
 	b = Bitso()
-	b.availableBooks()
-	b.ticker("xrp_mxn")
+	#b.availableBooks()
+	#b.ticker("xrp_mxn")
+	#b.orderBook("xrp_mxn")
+	b.trades("xrp_mxn")
 
 if __name__ == "__main__":
     # execute only if run as a script
